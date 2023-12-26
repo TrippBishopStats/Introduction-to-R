@@ -154,7 +154,7 @@ hist(unfair_coin_flips, breaks=seq(-0.5, 10.5, 1))
 
 ## Geometric distribution - It's a cousin of the binomial distribution. It is
 ## also a discrete distribution and it models the amount of time it takes for
-## the first successful trial to occur given a specificed probability of
+## the first successful trial to occur given a specified probability of
 ## success. The nickname of the distribution in R is "geom".
 
 set.seed(12)
@@ -182,4 +182,53 @@ prob_longer_1 <- pexp(q=1,
 
 prob_longer_1
 
-plot(density(exponential_data))
+exp_data <- with(density(exponential_data), data.frame(x,y))
+exp_data |> 
+  ggplot(aes(x=x,y=y)) +
+  geom_line(linewidth=0.75) +
+  geom_ribbon(data = subset(exp_data, x < 1),
+              aes(ymax=y, ymin=0),
+              fill = "skyblue",
+              alpha = 0.4) +
+  geom_ribbon(data = subset(exp_data, x >= 1),
+              aes(ymax=y, ymin=0),
+              fill = "red",
+              alpha = 0.4) +
+  geom_text(x=1.75, y=0.0625, label=round(prob_longer_1,2)) +
+  geom_text(x=0.5, y=0.25, label=round(1-prob_longer_1,2)) +
+  xlim(-0.5,6)
+
+# Notice how the probability of the first event occurring before 1 unit of time
+# is higher than that for the event happening after 1 unit of time has passed.
+
+## Poisson Distribution
+
+# The Poisson distribution is used to model the probability of X number of
+# events occurring within an interval where the time to the next success is
+# governed by the exponential distribution. The nickname for the Poisson
+# distribution in R is "pois".
+
+set.seed(12)
+arrival_rate_1 <- rpois(n=1000000,
+                        lambda = 1) #Arrival rate
+
+table(arrival_rate_1)
+
+# The frequency table and histogram show that 0 or 1 arrivals is by far the most
+# likely, and that the probability drops off considerably after 4 arrivals.
+
+hist(arrival_rate_1, breaks=seq(-0.5,max(arrival_rate_1) + 0.5, 1))
+
+# If we increase the arrival rate, we get something that looks a lot more like a
+# normal distribution, which is interesting because the Poission distribution is
+# associated with the exponential distribution.
+set.seed(12)
+arrival_rate_1 <- rpois(n=1000000,
+                        lambda = 10) #Arrival rate
+
+table(arrival_rate_1)
+
+# The frequency table and histogram show that 0 or 1 arrivals is by far the most
+# likely, and that the probability drops off considerably after 4 arrivals.
+
+hist(arrival_rate_1, breaks=seq(-0.5,max(arrival_rate_1) + 0.5, 1))
