@@ -104,6 +104,7 @@ result_table
 
 (472+238)/sum(result_table)
 
+
 confusionMatrix(data = factor(class_preds), 
                 reference = factor(titanic_train$Survived),
                 positive = "1")      # Set the positive class to Survived
